@@ -1,13 +1,15 @@
 package ru.skypro.homework.dto;
 
 import lombok.*;
-@RequiredArgsConstructor
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
+@EqualsAndHashCode
 public class AdDto {
     private int author;
     private String image;
     private int pk;
     private int price;
-    private int title;
+    private String title;
 }

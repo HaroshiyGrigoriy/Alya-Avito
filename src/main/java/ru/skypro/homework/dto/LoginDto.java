@@ -1,13 +1,11 @@
 package ru.skypro.homework.dto;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 @EqualsAndHashCode
 @Getter
-@RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
 public class LoginDto {
     private String username;
     private String password;

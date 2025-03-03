@@ -3,7 +3,6 @@ package ru.skypro.homework.dto;
 import lombok.*;
 
 @EqualsAndHashCode
-@RequiredArgsConstructor
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

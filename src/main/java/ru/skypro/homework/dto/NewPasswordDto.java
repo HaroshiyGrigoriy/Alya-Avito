@@ -4,7 +4,6 @@ import lombok.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@RequiredArgsConstructor
 @Getter
 @EqualsAndHashCode
 public class NewPasswordDto {
