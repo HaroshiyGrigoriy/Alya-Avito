@@ -5,16 +5,13 @@ import lombok.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+@EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
+@Setter
 @Getter
-@EqualsAndHashCode
-public class NewPasswordDto {
+public class CreateOrUpdateCommentDto {
     @NotBlank
-    @Size(min = 8, max = 16)
-    private String newPassword;
-    @NotBlank
-    @Size(min = 8, max = 16)
-    private String currentPassword;
-
+    @Size(min = 8, max = 64)
+    private String text;
 }
