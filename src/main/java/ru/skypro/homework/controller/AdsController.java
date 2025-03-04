@@ -1,6 +1,5 @@
 package ru.skypro.homework.controller;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -9,7 +8,6 @@ import ru.skypro.homework.dto.*;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Scanner;
 
 @RestController
 @RequestMapping("/ads")
@@ -115,4 +113,35 @@ public class AdsController {
         return ResponseEntity.ok(commentsDto);
     }
 
+    @PostMapping("/{id}/comments")
+    public ResponseEntity<CommentDto> createCommentForAd(@PathVariable int id, @RequestBody CommentDto dto) {
+        CommentDto comment = new CommentDto();
+        dto.setPk(10);
+        dto.setAuthor(2);
+        dto.setAuthorFirstName("Petr");
+        dto.setText(dto.getText());
+        dto.setCreateAd(System.currentTimeMillis());
+        dto.setAuthorImage("https://example.com/avatar.png");
+        return ResponseEntity.ok(comment);
+    }
+
+    @DeleteMapping("/{id}/comments/{commentId}")
+    public ResponseEntity<Void> deleteCommentForAd(@PathVariable int adId,
+                                                   @PathVariable int commentId) {
+        return ResponseEntity.notFound().build();
+    }
+
+    @PatchMapping("/{id}/comments/{commentId}")
+    public ResponseEntity<CommentDto> updateCommentForAd(@PathVariable int adId,
+                                                                       @PathVariable int commentId,
+                                                                       @RequestBody CommentDto dto) {
+        CommentDto updated = new CommentDto();
+        updated.setPk(commentId);
+        updated.setAuthor(2);
+        updated.setAuthorFirstName("Petr");
+        updated.setAuthorImage("https://example.com/avatar2.png");
+        updated.setCreateAd(System.currentTimeMillis());
+        updated.setText(dto.getText());
+        return ResponseEntity.ok(updated);
+    }
 }
