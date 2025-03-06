@@ -2,7 +2,6 @@ package ru.skypro.homework.dto;
 
 import lombok.*;
 
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
