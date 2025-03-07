@@ -3,6 +3,7 @@ package ru.skypro.homework.models;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,6 +22,9 @@ public class AdEntity {
     private String description;
     private int price;
     private byte[] image;
-    @ManyToOne
-    private int authorId;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "author_id")
+    private UserEntity author;
+
 }

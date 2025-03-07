@@ -7,6 +7,7 @@ import ru.skypro.homework.dto.Role;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -27,6 +28,5 @@ public class UserEntity {
     private String lastName;
     private String phone;
     private Role role;
-    private byte[] image;
-
+    private String image;
 }
