@@ -1,6 +1,8 @@
 package ru.skypro.homework.models;
 
 import lombok.*;
+import org.hibernate.annotations.Fetch;
+import org.springframework.context.annotation.Lazy;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -18,7 +20,13 @@ public class CommentEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private LocalDateTime createdAd;
-    private int author_id;
-    private int ad_id;
     private String text;
+
+    @ManyToOne
+    @JoinColumn(name = "author_id", nullable = false)
+    private UserEntity author;
+
+    @ManyToOne
+    @JoinColumn(name = "ad_id", nullable = false)
+    private AdEntity ad;
 }
