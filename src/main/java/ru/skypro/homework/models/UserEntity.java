@@ -3,20 +3,26 @@ package ru.skypro.homework.models;
 import lombok.*;
 import net.bytebuddy.dynamic.loading.InjectionClassLoader;
 import org.springframework.boot.autoconfigure.web.WebProperties;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import ru.skypro.homework.dto.Role;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 @Getter
 @Setter
+@EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
+
 @Entity
 @Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = "email")})
-public class UserEntity {
+public class UserEntity implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -26,34 +32,38 @@ public class UserEntity {
     private String firstName;
     private String lastName;
     private String phone;
+    @Enumerated(EnumType.STRING)
     private Role role;
     private String image;
 
-    @OneToMany
-    private List<CommentEntity> comments;
-
-    @OneToMany
-    private List<AdEntity> ads;
-
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        UserEntity that = (UserEntity) o;
-        return id == that.id
-                && Objects.equals(email, that.email)
-                && Objects.equals(password, that.password)
-                && Objects.equals(firstName, that.firstName)
-                && Objects.equals(lastName, that.lastName)
-                && Objects.equals(phone, that.phone)
-                && role == that.role
-                && Objects.equals(image, that.image)
-                && Objects.equals(comments, that.comments)
-                && Objects.equals(ads, that.ads);
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+
+        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_"+role.name()));
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(id, email, password, firstName, lastName, phone, role, image, comments, ads);
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true ;
     }
 }
