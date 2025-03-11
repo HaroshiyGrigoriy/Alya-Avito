@@ -37,7 +37,7 @@ public class UserController {
     @PatchMapping("/me")
     public ResponseEntity<UpdateUserDto> updateUserInfo(@Valid @RequestBody UpdateUserDto userDto,
                                                         Authentication authentication) {
-       UpdateUserDto dto = userService.updateUser(userDto, authentication);
+        UpdateUserDto dto = userService.updateUser(userDto, authentication);
         return ResponseEntity.status(200).body(dto);
     }
 
