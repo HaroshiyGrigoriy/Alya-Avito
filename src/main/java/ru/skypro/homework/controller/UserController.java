@@ -1,36 +1,44 @@
 package ru.skypro.homework.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.skypro.homework.dto.NewPasswordDto;
 import ru.skypro.homework.dto.Role;
 import ru.skypro.homework.dto.UpdateUserDto;
 import ru.skypro.homework.dto.UserDto;
+import ru.skypro.homework.service.UserService;
+
+import javax.validation.Valid;
+import java.net.Authenticator;
 
 @RestController
-@CrossOrigin(value = "http://localhost:3000")
 @RequestMapping("/users")
+@RequiredArgsConstructor
 public class UserController {
+
+    private final UserService userService;
+
     @PostMapping("/set_password")
-    public ResponseEntity<Void> passwordUpdate(@RequestBody NewPasswordDto newPasswordDto) {
+    public ResponseEntity<Void> passwordUpdate(@RequestBody NewPasswordDto newPasswordDto,
+                                               Authentication authentication) {
+        userService.updatePassword(newPasswordDto, authentication);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/me")
-    public ResponseEntity<UserDto> getUserInfo() {
-        UserDto userDto = new UserDto();
-        userDto.setEmail("test@user.com");
-        userDto.setPhone("+71234567890");
-        userDto.setFirstName("Тест");
-        userDto.setLastName("Пользователь");
-        userDto.setRole(Role.USER);
-        return ResponseEntity.ok(userDto);
+    public ResponseEntity<UserDto> getUserInfo(Authentication authentication) {
+        return ResponseEntity.ok(userService.getUser(authentication));
     }
 
     @PatchMapping("/me")
-    public ResponseEntity<UpdateUserDto> updateUserInfo(@RequestBody UpdateUserDto userDto) {
-        return ResponseEntity.status(200).body(userDto);
+    public ResponseEntity<UpdateUserDto> updateUserInfo(@Valid @RequestBody UpdateUserDto userDto,
+                                                        Authentication authentication) {
+        UpdateUserDto dto = userService.updateUser(userDto, authentication);
+        return ResponseEntity.status(200).body(dto);
     }
 
     @PatchMapping("/me/image")

@@ -1,29 +1,28 @@
 package ru.skypro.homework.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
+import ru.skypro.homework.service.AdService;
 
 import java.util.Arrays;
 import java.util.Collections;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/ads")
 @CrossOrigin(value = "http://localhost:3000")
 public class AdsController {
+
+    private final AdService adService;
+
     @GetMapping
     public ResponseEntity<AdsDto> getAllAds() {
-        AdsDto adsDto = new AdsDto();
-        adsDto.setCount(1);
-        AdDto adDto = new AdDto();
-        adDto.setPk(1);
-        adDto.setTitle("Слон");
-        adDto.setPrice(1000000);
-        adDto.setImage("https://picsum.photos/300/200");
-        adsDto.setResults(Collections.singletonList(adDto));
-        return ResponseEntity.ok().body(adsDto);
+
+        return ResponseEntity.ok().body(adService.getAllAds());
     }
 
     @PostMapping
@@ -36,7 +35,7 @@ public class AdsController {
         adDto.setPrice(Integer.parseInt(dto.getPrice()));
         adDto.setImage("https://picsum.photos/300/200");
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(adDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(adService.createAd());
     }
 
     @GetMapping("/{id}")
@@ -133,8 +132,8 @@ public class AdsController {
 
     @PatchMapping("/{id}/comments/{commentId}")
     public ResponseEntity<CommentDto> updateCommentForAd(@PathVariable int adId,
-                                                                       @PathVariable int commentId,
-                                                                       @RequestBody CommentDto dto) {
+                                                         @PathVariable int commentId,
+                                                         @RequestBody CommentDto dto) {
         CommentDto updated = new CommentDto();
         updated.setPk(commentId);
         updated.setAuthor(2);

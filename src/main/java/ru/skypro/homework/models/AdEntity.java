@@ -21,7 +21,7 @@ public class AdEntity {
     private String title;
     private String description;
     private int price;
-    private byte[] image;
+    private String image;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "author_id")
