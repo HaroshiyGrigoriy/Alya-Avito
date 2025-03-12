@@ -1,5 +1,7 @@
 package ru.skypro.homework.service;
 
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.AdDto;
 import ru.skypro.homework.dto.AdsDto;
 import ru.skypro.homework.dto.CreateOrUpdateAdDto;
@@ -10,5 +12,11 @@ import java.util.List;
 public interface AdService {
     AdsDto getAllAds();
 
-    AdDto createAd(CreateOrUpdateAdDto adDto, AdEntity ad);
+    AdDto createAd(CreateOrUpdateAdDto adDto, MultipartFile multipartFile, UserDetails details);
+
+    AdDto getAdById(int id);
+
+    void deleteAd(int id);
+
+    AdDto updateAd(int id, CreateOrUpdateAdDto dto);
 }

@@ -8,8 +8,8 @@ import ru.skypro.homework.dto.UserDto;
 public interface UserService {
     void updatePassword(NewPasswordDto dto, Authentication authentication);
 
-   UserDto getUser(Authentication authentication);
+    UserDto getUser(Authentication authentication);
 
     UpdateUserDto updateUser(UpdateUserDto dto, Authentication authentication);
-
 }
+

@@ -3,6 +3,8 @@ package ru.skypro.homework.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
@@ -27,26 +29,16 @@ public class AdsController {
 
     @PostMapping
     public ResponseEntity<AdDto> addAd(@RequestPart("properties") CreateOrUpdateAdDto dto,
-                                       @RequestPart("image") MultipartFile multipartFile) {
-        AdDto adDto = new AdDto();
-        adDto.setPk(101);
-        adDto.setAuthor(1);
-        adDto.setTitle(dto.getTitle());
-        adDto.setPrice(Integer.parseInt(dto.getPrice()));
-        adDto.setImage("https://picsum.photos/300/200");
+                                       @RequestPart("image") MultipartFile multipartFile,
+                                       @AuthenticationPrincipal UserDetails details) {
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(adService.createAd());
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(adService.createAd(dto, multipartFile, details));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<AdDto> getAdInfo(@PathVariable int id) {
-        AdDto adDto = new AdDto();
-        adDto.setPk(101);
-        adDto.setAuthor(1);
-        adDto.setTitle(adDto.getTitle());
-        adDto.setPrice(adDto.getPrice());
-        adDto.setImage("https://picsum.photos/300/200");
-        return ResponseEntity.ok(adDto);
+        return ResponseEntity.ok(adService.getAdById(id));
     }
 
     @DeleteMapping("/{id}")
@@ -55,15 +47,9 @@ public class AdsController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<CreateOrUpdateAdDto> updateAd(@PathVariable int id,
-                                                        @RequestBody CreateOrUpdateAdDto adDto) {
-        AdDto updateAd = new AdDto();
-        updateAd.setPk(id);
-        updateAd.setAuthor(1);
-        updateAd.setTitle(adDto.getTitle());
-        updateAd.setPrice(Integer.parseInt(adDto.getPrice()));
-        updateAd.setImage("https://example.com/ad_image.png");
-        return ResponseEntity.ok(adDto);
+    public ResponseEntity<AdDto> updateAd(@PathVariable int id,
+                                          @RequestBody CreateOrUpdateAdDto adDto) {
+        return ResponseEntity.ok(adService.updateAd(id, adDto));
     }
 
     @GetMapping("/me")
