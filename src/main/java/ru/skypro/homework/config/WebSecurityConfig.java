@@ -3,6 +3,7 @@ package ru.skypro.homework.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -61,11 +62,15 @@ public class WebSecurityConfig {
                                 authorization
                                         .antMatchers(AUTH_WHITELIST).permitAll()
                                         .antMatchers("/ads/**", "/users/**").authenticated()
-                .anyRequest().permitAll())
+                                        .antMatchers(HttpMethod.GET, "/ads/**", "/comments/**").authenticated()
+                                        .antMatchers(HttpMethod.POST, "/ads/**", "/comments/**").hasRole("USER")
+                                        .antMatchers(HttpMethod.PATCH, "/ads/**", "/comments/**").hasAnyRole("USER", "ADMIN")
+                                        .antMatchers(HttpMethod.DELETE, "/ads/**", "/comments/**").hasAnyRole("USER", "ADMIN")
+                                        .anyRequest().permitAll())
                 .httpBasic(withDefaults())
                 .exceptionHandling()
                 .authenticationEntryPoint((request, response, authException) ->
-                        response.sendError(HttpServletResponse.SC_UNAUTHORIZED,"Неверный логин или пароль."));
+                        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Неверный логин или пароль."));
 
         return http.build();
     }

@@ -3,6 +3,8 @@ package ru.skypro.homework.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
@@ -14,7 +16,6 @@ import java.util.Collections;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/ads")
-@CrossOrigin(value = "http://localhost:3000")
 public class AdsController {
 
     private final AdService adService;
@@ -27,26 +28,16 @@ public class AdsController {
 
     @PostMapping
     public ResponseEntity<AdDto> addAd(@RequestPart("properties") CreateOrUpdateAdDto dto,
-                                       @RequestPart("image") MultipartFile multipartFile) {
-        AdDto adDto = new AdDto();
-        adDto.setPk(101);
-        adDto.setAuthor(1);
-        adDto.setTitle(dto.getTitle());
-        adDto.setPrice(Integer.parseInt(dto.getPrice()));
-        adDto.setImage("https://picsum.photos/300/200");
+                                       @RequestPart("image") MultipartFile multipartFile,
+                                       @AuthenticationPrincipal UserDetails details) {
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(adService.createAd());
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(adService.createAd(dto, multipartFile, details));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AdDto> getAdInfo(@PathVariable int id) {
-        AdDto adDto = new AdDto();
-        adDto.setPk(101);
-        adDto.setAuthor(1);
-        adDto.setTitle(adDto.getTitle());
-        adDto.setPrice(adDto.getPrice());
-        adDto.setImage("https://picsum.photos/300/200");
-        return ResponseEntity.ok(adDto);
+    public ResponseEntity<ExtendedAdDto> getAdInfo(@PathVariable int id) {
+        return ResponseEntity.ok(adService.getAdById(id));
     }
 
     @DeleteMapping("/{id}")
@@ -55,38 +46,15 @@ public class AdsController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<CreateOrUpdateAdDto> updateAd(@PathVariable int id,
-                                                        @RequestBody CreateOrUpdateAdDto adDto) {
-        AdDto updateAd = new AdDto();
-        updateAd.setPk(id);
-        updateAd.setAuthor(1);
-        updateAd.setTitle(adDto.getTitle());
-        updateAd.setPrice(Integer.parseInt(adDto.getPrice()));
-        updateAd.setImage("https://example.com/ad_image.png");
-        return ResponseEntity.ok(adDto);
+    public ResponseEntity<AdDto> updateAd(@PathVariable int id,
+                                          @RequestBody CreateOrUpdateAdDto adDto) {
+        return ResponseEntity.ok(adService.updateAd(id, adDto));
     }
 
     @GetMapping("/me")
-    public ResponseEntity<AdsDto> getMyAds() {
-        AdsDto ads = new AdsDto();
-        ads.setCount(2);
+    public ResponseEntity<AdsDto> getMyAds(@AuthenticationPrincipal UserDetails userDetails) {
 
-        AdDto ad1 = new AdDto();
-        ad1.setPk(1);
-        ad1.setAuthor(999); // Текущий пользователь
-        ad1.setTitle("Моё объявление 1");
-        ad1.setPrice(1234);
-        ad1.setImage("https://example.com/ad1.png");
-
-        AdDto ad2 = new AdDto();
-        ad2.setPk(2);
-        ad2.setAuthor(999);
-        ad2.setTitle("Моё объявление 2");
-        ad2.setPrice(9999);
-        ad2.setImage("https://example.com/ad2.png");
-
-        ads.setResults(Arrays.asList(ad1, ad2));
-        return ResponseEntity.ok(ads);
+        return ResponseEntity.ok(adService.getMyAds(userDetails));
     }
 
     @PatchMapping("/{id}/image")
@@ -96,51 +64,5 @@ public class AdsController {
         return ResponseEntity.ok(bytes);
     }
 
-    @GetMapping("/{id}/comments")
-    public ResponseEntity<CommentsDto> getCommentsAd(@PathVariable int id) {
-        CommentsDto commentsDto = new CommentsDto();
-        commentsDto.setCount(1);
-        CommentDto dto = new CommentDto();
-        dto.setPk(10);
-        dto.setAuthor(2);
-        dto.setAuthorFirstName("Petr");
-        dto.setText("Красавчик");
-        dto.setCreateAd(System.currentTimeMillis());
-        dto.setAuthorImage("https://example.com/avatar.png");
 
-        commentsDto.setResults(Collections.singletonList(dto));
-        return ResponseEntity.ok(commentsDto);
-    }
-
-    @PostMapping("/{id}/comments")
-    public ResponseEntity<CommentDto> createCommentForAd(@PathVariable int id, @RequestBody CommentDto dto) {
-        CommentDto comment = new CommentDto();
-        dto.setPk(10);
-        dto.setAuthor(2);
-        dto.setAuthorFirstName("Petr");
-        dto.setText(dto.getText());
-        dto.setCreateAd(System.currentTimeMillis());
-        dto.setAuthorImage("https://example.com/avatar.png");
-        return ResponseEntity.ok(comment);
-    }
-
-    @DeleteMapping("/{id}/comments/{commentId}")
-    public ResponseEntity<Void> deleteCommentForAd(@PathVariable int adId,
-                                                   @PathVariable int commentId) {
-        return ResponseEntity.notFound().build();
-    }
-
-    @PatchMapping("/{id}/comments/{commentId}")
-    public ResponseEntity<CommentDto> updateCommentForAd(@PathVariable int adId,
-                                                         @PathVariable int commentId,
-                                                         @RequestBody CommentDto dto) {
-        CommentDto updated = new CommentDto();
-        updated.setPk(commentId);
-        updated.setAuthor(2);
-        updated.setAuthorFirstName("Petr");
-        updated.setAuthorImage("https://example.com/avatar2.png");
-        updated.setCreateAd(System.currentTimeMillis());
-        updated.setText(dto.getText());
-        return ResponseEntity.ok(updated);
-    }
 }
