@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.AdDto;
 import ru.skypro.homework.dto.AdsDto;
 import ru.skypro.homework.dto.CreateOrUpdateAdDto;
+import ru.skypro.homework.dto.ExtendedAdDto;
 import ru.skypro.homework.mappers.AdMapper;
 import ru.skypro.homework.models.AdEntity;
 import ru.skypro.homework.models.UserEntity;
@@ -18,6 +19,7 @@ import ru.skypro.homework.service.AdService;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -42,11 +44,11 @@ public class AdServiceImpl implements AdService {
     }
 
     @Override
-    public AdDto getAdById(int id) {
+    public ExtendedAdDto getAdById(int id) {
         AdEntity ad = adRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("Такого объявления нет")
         );
-        return adMapper.toAdDto(ad);
+        return adMapper.toExtendedAdDto(ad);
     }
 
     @Override
@@ -69,5 +71,13 @@ public class AdServiceImpl implements AdService {
         );
         adRepository.save(adMapper.toUpdateAdEntity(dto));
         return adMapper.toAdDto(ad);
+    }
+
+    @Override
+    public AdsDto getMyAds(UserDetails user) {
+        UserEntity entity = userRepository.findByEmail(user.getUsername()).orElseThrow(
+                () -> new UsernameNotFoundException("Пользователь не найден"));
+        List<AdEntity> entityList = adRepository.findByAuthorId(entity.getId());
+        return adMapper.adsDto(entityList);
     }
 }
