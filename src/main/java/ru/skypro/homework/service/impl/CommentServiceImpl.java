@@ -36,8 +36,6 @@ public class CommentServiceImpl implements CommentService {
         return commentMapper.adsDto(commentRepository.findCommentByAdId(id));
     }
 
-    @PreAuthorize("@adRepository.findById(#id)" +
-            ".get().author.email == authentication.name")
     @Override
     public CommentDto createComment(int id, CreateOrUpdateCommentDto dto, UserDetails userDetails) {
         UserEntity user = userRepository.findByEmail(userDetails.getUsername())

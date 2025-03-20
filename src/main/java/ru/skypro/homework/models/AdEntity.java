@@ -23,7 +23,7 @@ public class AdEntity {
     private int price;
     private String image;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "author_id")
     private UserEntity author;
 

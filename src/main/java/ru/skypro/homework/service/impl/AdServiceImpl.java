@@ -69,7 +69,8 @@ public class AdServiceImpl implements AdService {
         AdEntity ad = adRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("Такого объявления нет")
         );
-        adRepository.save(adMapper.toUpdateAdEntity(dto));
+        adMapper.toUpdateAdEntity(dto, ad);
+        adRepository.save(ad);
         return adMapper.toAdDto(ad);
     }
 

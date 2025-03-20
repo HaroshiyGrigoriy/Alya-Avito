@@ -45,8 +45,7 @@ public class AdMapper {
         return ad;
     }
 
-    public AdEntity toUpdateAdEntity(CreateOrUpdateAdDto dto) {
-        AdEntity ad = new AdEntity();
+    public AdEntity toUpdateAdEntity(CreateOrUpdateAdDto dto,AdEntity ad) {
         ad.setTitle(dto.getTitle());
         ad.setPrice(Integer.parseInt(dto.getPrice()));
         ad.setDescription(dto.getDescription());
