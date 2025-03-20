@@ -12,7 +12,7 @@ public class CommentDto {
     private int author;
     private String authorImage;
     private String authorFirstName;
-    private long createAd;
+    private long createdAt;
     private int pk;
     private String text;
 }
