@@ -13,7 +13,12 @@ public class WebImageConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/image/**")
-                .addResourceLocations("file:" + imagesRoot + "/");
+
+        registry.addResourceHandler("/users/**")
+                .addResourceLocations("file:" + imagesRoot + "/users/");
+
+        registry.addResourceHandler("/ads/**")
+                .addResourceLocations("file:" + imagesRoot + "/ads/");
     }
 }
+

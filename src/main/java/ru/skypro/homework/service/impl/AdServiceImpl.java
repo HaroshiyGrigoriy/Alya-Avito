@@ -16,9 +16,11 @@ import ru.skypro.homework.models.UserEntity;
 import ru.skypro.homework.repositories.AdRepository;
 import ru.skypro.homework.repositories.UserRepository;
 import ru.skypro.homework.service.AdService;
+import ru.skypro.homework.service.ImageService;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -27,6 +29,9 @@ public class AdServiceImpl implements AdService {
     private final AdMapper adMapper;
     private final AdRepository adRepository;
     private final UserRepository userRepository;
+    private final ImageService imageService;
+
+
 
     @Override
     public AdsDto getAllAds() {
@@ -40,6 +45,16 @@ public class AdServiceImpl implements AdService {
                 new UsernameNotFoundException("Пользователь не найден"));
         AdEntity entity = adMapper.toAdEntity(adDto, user);
         adRepository.save(entity);
+
+        if (multipartFile != null && !multipartFile.isEmpty()) {
+            try {
+                String filePath = imageService.saveImage(multipartFile, entity.getId(), "ads");
+                entity.setImage(filePath);
+                adRepository.save(entity);
+            } catch (IOException e) {
+                throw new RuntimeException("Ошибка при сохранении изображения", e);
+            }
+        }
         return adMapper.toAdDto(entity);
     }
 
@@ -80,5 +95,23 @@ public class AdServiceImpl implements AdService {
                 () -> new UsernameNotFoundException("Пользователь не найден"));
         List<AdEntity> entityList = adRepository.findByAuthorId(entity.getId());
         return adMapper.adsDto(entityList);
+    }
+
+    @Override
+    public void updateAdImage(int id, MultipartFile image) {
+        AdEntity ad = adRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Такого объявления нет")
+        );
+        try {
+            if (ad.getImage() != null) {
+                imageService.deleteImage(ad.getImage());
+            }
+            String filePath = imageService.saveImage(image, id, "ads");
+            ad.setImage(filePath);
+            adRepository.save(ad);
+        } catch (IOException e) {
+            throw new RuntimeException("Ошибка при сохранении изображения", e);
+
+        }
     }
 }

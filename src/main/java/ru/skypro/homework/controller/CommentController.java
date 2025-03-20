@@ -15,6 +15,7 @@ import java.util.Collections;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/ads/{id}/comments")
+@CrossOrigin()
 public class CommentController {
     private final CommentService commentService;
 

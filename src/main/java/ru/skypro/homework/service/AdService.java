@@ -22,4 +22,5 @@ public interface AdService {
     AdDto updateAd(int id, CreateOrUpdateAdDto dto);
 
     AdsDto getMyAds(UserDetails userDetails);
+    void updateAdImage(int id, MultipartFile image);
 }

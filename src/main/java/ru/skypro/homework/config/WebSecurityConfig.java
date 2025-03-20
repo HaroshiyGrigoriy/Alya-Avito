@@ -61,6 +61,8 @@ public class WebSecurityConfig {
                         authorization ->
                                 authorization
                                         .antMatchers(AUTH_WHITELIST).permitAll()
+                                        .antMatchers(HttpMethod.GET, "/users/**").permitAll()
+                                        .antMatchers(HttpMethod.GET, "/ads/**").permitAll()
                                         .antMatchers("/ads/**", "/users/**").authenticated()
                                         .antMatchers(HttpMethod.GET, "/comments/**").authenticated()
                                         .antMatchers(HttpMethod.POST, "/ads/**", "/comments/**").hasRole("USER")
