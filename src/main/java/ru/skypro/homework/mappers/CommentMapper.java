@@ -19,7 +19,7 @@ public class CommentMapper {
         dto.setAuthor(comment.getAuthor().getId());
         dto.setPk(comment.getAd().getId());
         dto.setText(comment.getText());
-        dto.setCreateAd(comment.getCreatedAd() != null ?
+        dto.setCreatedAt(comment.getCreatedAd() != null ?
                 comment.getCreatedAd().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli() : 0);
         dto.setText(comment.getText());
         dto.setAuthorFirstName(comment.getAuthor().getFirstName());

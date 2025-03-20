@@ -31,8 +31,8 @@ public class AdsController {
                                        @RequestPart("image") MultipartFile multipartFile,
                                        @AuthenticationPrincipal UserDetails details) {
 
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(adService.createAd(dto, multipartFile, details));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(adService.createAd(dto, multipartFile, details));
     }
 
     @GetMapping("/{id}")
@@ -42,6 +42,7 @@ public class AdsController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteAd(@PathVariable int id) {
+        adService.deleteAd(id);
         return ResponseEntity.noContent().build();
     }
 
@@ -58,10 +59,10 @@ public class AdsController {
     }
 
     @PatchMapping("/{id}/image")
-    public ResponseEntity<byte[]> updateImage(@PathVariable int id,
+    public ResponseEntity<Void> updateImage(@PathVariable int id,
                                               @RequestPart MultipartFile image) {
-        byte[] bytes = {1, 2, 3, 4, 5};
-        return ResponseEntity.ok(bytes);
+        adService.updateAdImage(id,image);
+        return ResponseEntity.ok().build();
     }
 
 

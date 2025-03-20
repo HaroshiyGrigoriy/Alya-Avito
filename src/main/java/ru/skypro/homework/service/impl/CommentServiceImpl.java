@@ -36,15 +36,15 @@ public class CommentServiceImpl implements CommentService {
         return commentMapper.adsDto(commentRepository.findCommentByAdId(id));
     }
 
-    @PreAuthorize("@adRepository.findById(#id)" +
-            ".get().author.email == authentication.name")
     @Override
+    @Transactional
     public CommentDto createComment(int id, CreateOrUpdateCommentDto dto, UserDetails userDetails) {
         UserEntity user = userRepository.findByEmail(userDetails.getUsername())
                 .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
         AdEntity ad = adRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Такого объявления нет"));
         CommentEntity comment = commentMapper.toCommentEntity(dto, ad, user);
+        commentRepository.save(comment);
         return commentMapper.toCommentDto(comment);
     }
 
